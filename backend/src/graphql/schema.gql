@@ -1,0 +1,98 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Link {
+  id: Int!
+  slug: String!
+  target: String!
+  link: String
+  user: User
+}
+
+type User {
+  id: Int!
+  isActive: Boolean!
+  email: String!
+  links: [Link!]!
+}
+
+type Query {
+  users: [User!]!
+  me: User!
+}
+
+type Mutation {
+  activate(token: String!): ActivateUserResponse!
+  addUser(input: AddUserInput!): AddUserResponse!
+  login(input: LoginInput!): LoginResponse!
+  addLink(input: AddLinkInput!): AddLinkResponse!
+}
+
+union ActivateUserResponse = ActivationSuccessResponse | ActivationInvalidResponse
+
+type ActivationSuccessResponse {
+  message: String!
+}
+
+type ActivationInvalidResponse {
+  message: String!
+}
+
+union AddUserResponse = UserSuccessResponse | UserEmailTakenResponse
+
+type UserSuccessResponse {
+  message: String!
+}
+
+type UserEmailTakenResponse {
+  message: String!
+}
+
+input AddUserInput {
+  email: String!
+  password: String!
+}
+
+union LoginResponse = LoginSuccessResponse | LoginInvalidResponse | LoginUserInactiveResponse
+
+type LoginSuccessResponse {
+  token: String!
+  expiryDate: DateTime!
+  email: String!
+  userId: Float!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type LoginInvalidResponse {
+  message: String!
+}
+
+type LoginUserInactiveResponse {
+  message: String!
+}
+
+input LoginInput {
+  email: String!
+  password: String!
+}
+
+union AddLinkResponse = LinkSuccessResponse | LinkSlugTakenResponse
+
+type LinkSuccessResponse {
+  message: String!
+  link: String!
+}
+
+type LinkSlugTakenResponse {
+  message: String!
+}
+
+input AddLinkInput {
+  target: String!
+  slug: String
+}
