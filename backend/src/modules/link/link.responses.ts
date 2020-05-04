@@ -24,7 +24,15 @@ export class LinkSlugTakenResponse implements BaseResponse {
   readonly message: string = "Link with this slug already exists.";
 }
 
+@ObjectType()
+export class LinkIncorrectResponse implements BaseResponse {
+  readonly _typename: string = LinkIncorrectResponse.name;
+
+  @Field()
+  readonly message: string = "Link cannot be created.";
+}
+
 export const AddLinkResponse = createUnionType({
   name: "AddLinkResponse",
-  types: () => [LinkSuccessResponse, LinkSlugTakenResponse],
+  types: () => [LinkSuccessResponse, LinkSlugTakenResponse, LinkIncorrectResponse],
 });

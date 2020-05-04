@@ -6,7 +6,8 @@ import { UserService } from "../user/user.service";
 import { AddLinkInput } from "./dto/add-link.input";
 import { SlugParams } from "./dto/slug.params";
 import { Link } from "./link.entity";
-import { LinkSlugTakenResponse, LinkSuccessResponse } from "./link.responses";
+import { LinkSlugTakenResponse, LinkSuccessResponse, LinkIncorrectResponse } from "./link.responses";
+import { protocolRegex } from "../../shared/protocol.regex";
 
 @Injectable()
 export class LinkService {
@@ -26,7 +27,9 @@ export class LinkService {
   async addLink(
     dto: AddLinkInput,
     userEmail: string,
-  ): Promise<LinkSuccessResponse | LinkSlugTakenResponse> {
+  ): Promise<
+    LinkSuccessResponse | LinkSlugTakenResponse | LinkIncorrectResponse
+  > {
     const user = await this.userService.findByEmail(userEmail);
     const hasOwnSlug = dto.slug != null;
     if (hasOwnSlug) {
@@ -46,8 +49,8 @@ export class LinkService {
     const newLink: DeepPartial<Link> = {
       slug,
       user,
-      target: dto.target,
-      link: `localhost:4000/${slug}`
+      target: this.addReferral(dto.target),
+      link: `localhost:4000/${slug}`,
     };
 
     await this.linkRepository.save(newLink);
@@ -64,5 +67,14 @@ export class LinkService {
     });
     if (!link) return generatedSlug;
     return this.generateId();
+  }
+
+  private addReferral(target: string): string {
+    const targetLink = protocolRegex.test(target)
+      ? target
+      : `https://${target}`;
+    const url = new URL(targetLink);
+    url.searchParams.append("ref", "gorr.io");
+    return url.toString();
   }
 }
