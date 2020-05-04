@@ -8,6 +8,7 @@ import { AuthModule } from "./modules/auth/auth.module";
 import { EmailModule } from "./modules/email/email.module";
 import { LinkModule } from "./modules/link/link.module";
 import { UserModule } from "./modules/user/user.module";
+import { VisitModule } from './modules/visit/visit.module';
 import * as ormConfig from "./ormconfig";
 
 @Module({
@@ -24,6 +25,7 @@ import * as ormConfig from "./ormconfig";
     UserModule,
     LinkModule,
     EmailModule,
+    VisitModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -51,6 +51,7 @@ export class LinkService {
       user,
       target: this.addReferral(dto.target),
       link: `localhost:4000/${slug}`,
+      createdAt: new Date(),
     };
 
     await this.linkRepository.save(newLink);
