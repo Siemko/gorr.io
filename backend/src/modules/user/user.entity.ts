@@ -23,6 +23,10 @@ export class User {
   @OneToMany(() => Link, link => link.user, { eager: true })
   links: Link[];
 
+  @Field()
+  @Column()
+  createdAt: Date;
+
   @Column()
   password: string;
 

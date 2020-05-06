@@ -49,6 +49,7 @@ export class UserService {
       email: dto.email,
       isActive: false,
       password: await hash(dto.password),
+      createdAt: new Date(),
     };
 
     await this.userRepository.save(newUser);

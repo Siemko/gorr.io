@@ -2,12 +2,29 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Visit {
+  id: Int!
+  ip: String
+  userAgent: String
+  referer: String
+  createdAt: DateTime!
+  link: Link
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
 type Link {
   id: Int!
   slug: String!
   target: String!
   link: String
+  createdAt: DateTime!
   user: User
+  visits: [Visit!]
+  visitsCount: Float!
 }
 
 type User {
@@ -15,6 +32,7 @@ type User {
   isActive: Boolean!
   email: String!
   links: [Link!]!
+  createdAt: DateTime!
 }
 
 type Query {
@@ -63,11 +81,6 @@ type LoginSuccessResponse {
   userId: Float!
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type LoginInvalidResponse {
   message: String!
 }
@@ -81,7 +94,7 @@ input LoginInput {
   password: String!
 }
 
-union AddLinkResponse = LinkSuccessResponse | LinkSlugTakenResponse
+union AddLinkResponse = LinkSuccessResponse | LinkSlugTakenResponse | LinkIncorrectResponse
 
 type LinkSuccessResponse {
   message: String!
@@ -89,6 +102,10 @@ type LinkSuccessResponse {
 }
 
 type LinkSlugTakenResponse {
+  message: String!
+}
+
+type LinkIncorrectResponse {
   message: String!
 }
 
