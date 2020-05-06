@@ -24,6 +24,7 @@ type Link {
   createdAt: DateTime!
   user: User
   visits: [Visit!]
+  visitsCount: Float!
 }
 
 type User {

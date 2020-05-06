@@ -1,5 +1,5 @@
-import { Controller, Get, Param, Redirect, Req, Next } from "@nestjs/common";
-import { Request } from "express";
+import { Controller, Get, Next, Param, Redirect, Req, Res } from "@nestjs/common";
+import { Request, Response } from "express";
 import { AppService } from "./app.service";
 import { SlugParams } from "./modules/link/dto/slug.params";
 import { Link } from "./modules/link/link.entity";
@@ -22,13 +22,7 @@ export class AppController {
   }
 
   @Get("/:slug")
-  @Redirect("https://gorrion.io", 302)
-  async redirect(
-    @Param() params: SlugParams,
-    @Req() request: Request,
-    @Next() next,
-  ) {
-    if (params.slug === "graphql") return await next();
+  async redirect(@Param() params: SlugParams, @Req() request: Request, @Res() response: Response) {
     const foundLink: Link = await this.linkService.findBySlug(params);
     if (foundLink) {
       this.visitService.queueVisit({
@@ -40,7 +34,7 @@ export class AppController {
       const targetLink = protocolRegex.test(foundLink.target)
         ? foundLink.target
         : `//${foundLink.target}`;
-      return { url: targetLink };
+      response.redirect(302, targetLink)
     }
   }
 }

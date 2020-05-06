@@ -44,4 +44,9 @@ export class Link {
 
   @Column({ default: false, type: "boolean" })
   isDeleted: boolean;
+
+  @Field()
+  get visitsCount(): number {
+    return this.visits.length;
+  }
 }
