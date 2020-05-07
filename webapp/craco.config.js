@@ -7,4 +7,12 @@ module.exports = {
       return config;
     },
   },
+  babel: {
+    plugins: [
+      [
+        "babel-plugin-styled-components",
+        {displayName: true, fileName: true, pure: true, minify: true},
+      ],
+    ],
+  },
 };

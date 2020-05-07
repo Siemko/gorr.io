@@ -1,7 +1,9 @@
 import React from "react";
+import GlobalStyle from "./GlobalStyles";
 
-const App = () => {
-  return (
+const App = () => (
+  <>
+    <GlobalStyle />
     <div className="App">
       <header className="App-header">
         <p>
@@ -17,7 +19,7 @@ const App = () => {
         </a>
       </header>
     </div>
-  );
-};
+  </>
+);
 
 export default App;
