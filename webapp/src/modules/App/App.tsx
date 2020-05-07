@@ -1,24 +1,19 @@
-import React from "react";
+import React, {Suspense} from "react";
+import {Switch} from "react-router";
+import AppRoute from "./AppRoute";
 import GlobalStyle from "./GlobalStyles";
+import routes from "./routes";
+
+const routeComponents = routes.map((route, index) => (
+  <AppRoute key={index} {...route} />
+));
 
 const App = () => (
   <>
     <GlobalStyle />
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Suspense fallback={"Loading..."}>
+      <Switch>{routeComponents}</Switch>
+    </Suspense>
   </>
 );
 
