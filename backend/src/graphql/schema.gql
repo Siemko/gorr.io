@@ -44,6 +44,7 @@ type Mutation {
   activate(token: String!): ActivateUserResponse!
   addUser(input: AddUserInput!): AddUserResponse!
   login(input: LoginInput!): LoginResponse!
+  refresh: TokenRefreshResponse!
   addLink(input: AddLinkInput!): AddLinkResponse!
 }
 
@@ -92,6 +93,19 @@ type LoginUserInactiveResponse {
 input LoginInput {
   email: String!
   password: String!
+}
+
+union TokenRefreshResponse = TokenRefreshSuccessResponse | TokenRefreshFailureResponse
+
+type TokenRefreshSuccessResponse {
+  token: String!
+  expiryDate: DateTime!
+  email: String!
+  userId: Float!
+}
+
+type TokenRefreshFailureResponse {
+  message: String!
 }
 
 union AddLinkResponse = LinkSuccessResponse | LinkSlugTakenResponse | LinkIncorrectResponse

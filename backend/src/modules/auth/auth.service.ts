@@ -1,16 +1,18 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { verify } from "argon2";
-import { User } from "../user/user.entity";
-import { UserService } from "../user/user.service";
-import { LoginInput } from "./dto/login.input";
-import {
-  LoginSuccessResponse,
-  LoginInvalidResponse,
-  LoginUserInactiveResponse,
-} from "./auth.responses";
 import { addDays } from "date-fns";
 import { TokenPayload } from "../../shared/token-payload.interface";
+import { User } from "../user/user.entity";
+import { UserService } from "../user/user.service";
+import {
+  LoginInvalidResponse,
+  LoginSuccessResponse,
+  LoginUserInactiveResponse,
+  TokenRefreshFailureResponse,
+  TokenRefreshSuccessResponse,
+} from "./auth.responses";
+import { LoginInput } from "./dto/login.input";
 export enum AuthCheckResponseType {
   SUCCESS = "SUCCESS",
   INVALID = "INVALID",
@@ -56,5 +58,22 @@ export class AuthService {
       default:
         return new LoginInvalidResponse();
     }
+  }
+
+  async refreshToken(
+    dto: TokenPayload,
+  ): Promise<TokenRefreshSuccessResponse | TokenRefreshFailureResponse> {
+    const user = await this.userService.findByEmail(dto.email);
+    if (!user) return new TokenRefreshFailureResponse();
+    if (user.isActive) {
+      const payload: TokenPayload = { email: user.email, sub: user.id };
+      return new TokenRefreshSuccessResponse({
+        token: this.jwtService.sign(payload),
+        email: user.email,
+        expiryDate: addDays(new Date(), 7),
+        id: user.id,
+      });
+    }
+    return new TokenRefreshFailureResponse();
   }
 }

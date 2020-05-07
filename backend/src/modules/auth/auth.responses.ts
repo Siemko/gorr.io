@@ -1,9 +1,9 @@
-import { Field, ObjectType, createUnionType } from "@nestjs/graphql";
+import { createUnionType, Field, ObjectType } from "@nestjs/graphql";
 import { BaseResponse } from "../../shared/base-response.interface";
 
 @ObjectType()
 export class LoginSuccessResponse {
-  readonly _typename: string = "LoginSuccessResponse";
+  readonly _typename: string = LoginSuccessResponse.name;
 
   @Field()
   token: string;
@@ -37,7 +37,7 @@ export class LoginSuccessResponse {
 
 @ObjectType()
 export class LoginInvalidResponse implements BaseResponse {
-  readonly _typename: string = "LoginInvalidResponse";
+  readonly _typename: string = LoginInvalidResponse.name;
 
   @Field()
   readonly message: string = "Invalid email or password.";
@@ -45,7 +45,7 @@ export class LoginInvalidResponse implements BaseResponse {
 
 @ObjectType()
 export class LoginUserInactiveResponse implements BaseResponse {
-  readonly _typename: string = "LoginUserInactiveResponse";
+  readonly _typename: string = LoginUserInactiveResponse.name;
 
   @Field()
   readonly message: string = "User is inactive.";
@@ -57,5 +57,26 @@ export const LoginResponse = createUnionType({
     LoginSuccessResponse,
     LoginInvalidResponse,
     LoginUserInactiveResponse,
+  ],
+});
+
+@ObjectType()
+export class TokenRefreshSuccessResponse extends LoginSuccessResponse {
+  readonly _typename: string = TokenRefreshSuccessResponse.name;
+}
+
+@ObjectType()
+export class TokenRefreshFailureResponse implements BaseResponse {
+  readonly _typename: string = TokenRefreshFailureResponse.name;
+
+  @Field()
+  readonly message: string = "Error.";
+}
+
+export const TokenRefreshResponse = createUnionType({
+  name: "TokenRefreshResponse",
+  types: () => [
+    TokenRefreshSuccessResponse,
+    TokenRefreshFailureResponse
   ],
 });

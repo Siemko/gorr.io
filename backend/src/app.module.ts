@@ -1,4 +1,4 @@
-import { Module, MiddlewareConsumer, RequestMethod } from "@nestjs/common";
+import { Module } from "@nestjs/common";
 import { GraphQLModule } from "@nestjs/graphql";
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { join } from "path";
@@ -10,7 +10,6 @@ import { LinkModule } from "./modules/link/link.module";
 import { UserModule } from "./modules/user/user.module";
 import { VisitModule } from "./modules/visit/visit.module";
 import * as ormConfig from "./ormconfig";
-import { RestrictedSlugMiddleware } from "./shared/restricted-slug.middleware";
 
 @Module({
   imports: [
@@ -31,10 +30,4 @@ import { RestrictedSlugMiddleware } from "./shared/restricted-slug.middleware";
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {
-  configure(consumer: MiddlewareConsumer) {
-    consumer
-      .apply(RestrictedSlugMiddleware)
-      .forRoutes({ path: "/:slug", method: RequestMethod.GET });
-  }
-}
+export class AppModule {}

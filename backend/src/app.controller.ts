@@ -1,5 +1,5 @@
-import { Controller, Get, Next, Param, Redirect, Req, Res } from "@nestjs/common";
-import { Request, Response } from "express";
+import { Controller, Get, Next, Param, Req, Res } from "@nestjs/common";
+import { NextFunction, Request, Response } from "express";
 import { AppService } from "./app.service";
 import { SlugParams } from "./modules/link/dto/slug.params";
 import { Link } from "./modules/link/link.entity";
@@ -22,7 +22,13 @@ export class AppController {
   }
 
   @Get("/:slug")
-  async redirect(@Param() params: SlugParams, @Req() request: Request, @Res() response: Response) {
+  async redirect(
+    @Param() params: SlugParams,
+    @Req() request: Request,
+    @Res() response: Response,
+    @Next() next: NextFunction,
+  ) {
+    if (params.slug === "graphql") return next();
     const foundLink: Link = await this.linkService.findBySlug(params);
     if (foundLink) {
       this.visitService.queueVisit({
@@ -34,7 +40,7 @@ export class AppController {
       const targetLink = protocolRegex.test(foundLink.target)
         ? foundLink.target
         : `//${foundLink.target}`;
-      response.redirect(302, targetLink)
+      response.redirect(302, targetLink);
     }
   }
 }
