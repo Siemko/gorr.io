@@ -9,6 +9,7 @@ services:
       - "./webapp/yarn.lock:/usr/app/webapp/yarn.lock"
       - "./webapp/tsconfig.json:/usr/app/webapp/tsconfig.json"
       - "./webapp/tsconfig-paths.json:/usr/app/webapp/tsconfig-paths.json"
+      - "./webapp/craco.config.js:/usr/app/webapp/craco.config.js"
       - "./webapp/src:/usr/app/webapp/src"
       - "./webapp/public:/usr/app/webapp/public"
       - "webapp_node_modules:/usr/app/webapp/node_modules"
