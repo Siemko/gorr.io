@@ -1,17 +1,38 @@
 version: "3.7"
 
 services:
+  webapp:
+    image: node:lts-alpine
+    working_dir: /usr/app/webapp
+    volumes:
+      - "./webapp/package.json:/usr/app/webapp/package.json"
+      - "./webapp/yarn.lock:/usr/app/webapp/yarn.lock"
+      - "./webapp/tsconfig.json:/usr/app/webapp/tsconfig.json"
+      - "./webapp/tsconfig-paths.json:/usr/app/webapp/tsconfig-paths.json"
+      - "./webapp/craco.config.js:/usr/app/webapp/craco.config.js"
+      - "./webapp/src:/usr/app/webapp/src"
+      - "./webapp/public:/usr/app/webapp/public"
+      - "webapp_node_modules:/usr/app/webapp/node_modules"
+    working_dir: /usr/app/webapp
+    command: sh -c "yarn && yarn start"
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+    env_file:
+      - .env
+
   backend:
-    image: node:lts
+    image: node:lts-alpine
     volumes:
       - "./backend/package.json:/usr/app/backend/package.json"
       - "./backend/package-lock.json:/usr/app/backend/package-lock.json"
       - "./backend/tsconfig.json:/usr/app/backend/tsconfig.json"
       - "./backend/tsconfig.build.json:/usr/app/backend/tsconfig.build.json"
-      - "./.env:/usr/app/.env"
       - "./backend/src:/usr/app/backend/src"
+      - "backend_node_modules:/usr/app/backend/node_modules"
     working_dir: /usr/app/backend
-    command: bash -c "npm install && npm run start:dev"
+    command: sh -c "npm install && npm run start:dev"
     ports:
       - "4000:4000"
     depends_on:
@@ -21,11 +42,15 @@ services:
       - .env
 
   db:
-    image: postgres:12
+    image: postgres:12-alpine
     env_file:
       - .env
 
   redis:
-    image: "redis:6"
+    image: redis:6-alpine
     env_file:
       - .env
+
+volumes:
+  webapp_node_modules:
+  backend_node_modules:
